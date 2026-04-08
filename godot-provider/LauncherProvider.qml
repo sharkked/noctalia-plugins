@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import Quickshell.Io
 import qs.Commons
 
@@ -10,6 +11,7 @@ Item {
     property var launcher: null
     property string name: "Godot Provider"
 
+    property var projectPaths: []
     property bool godotInstalled: false
     property string godotBin: "godot"
 
@@ -27,8 +29,25 @@ Item {
         }
     }
 
+    Process {
+        id: getProjectList
+        command: ["sh", "-c", "gawk 'match(\$0, /\[(.*)\]/, a) { print a[1] }' ~/.local/share/godot/projects.cfg"]
+        stdout: SplitParser {
+            onRead: data => {
+                console.log(data);
+                if (data.trim() !== "") {
+                    root.projectPaths.push(data.trim());
+                }
+            }
+        }
+        onExited: {
+            root.launcher?.updateResults();
+        }
+    }
+
     function init() {
         whichGodot.running = true;
+        getProjectList.running = true;
     }
 
     function handleCommand(searchText) {
@@ -69,16 +88,17 @@ Item {
         }
 
         var query = searchText.slice(4).trim();
-        return [
-            {
+        return root.projectPaths.map(function (p) {
+            return {
                 "name": "Sample Project",
-                "description": "",
+                "description": p,
                 "icon": "star",
                 "isTablerIcon": true,
                 "onActivate": function () {
+                    Quickshell.execDetached(["sh", "-c", `${root.godotBin} -e '/home/wren/workspace/about-nothing/'`]);
                     launcher.close();
                 }
-            }
-        ];
+            };
+        });
     }
 }
