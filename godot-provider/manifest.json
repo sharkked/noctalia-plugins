@@ -1,0 +1,19 @@
+{
+  "id": "godot-provider",
+  "name": "Godot Provider",
+  "version": "0.1.0",
+  "minNoctaliaVersion": "3.6.0",
+  "author": "wren/sharkked",
+  "license": "MIT",
+  "repository": "https://github.com/sharkked/noctalia-plugins",
+  "description": "A launcher provider for the Godot game engine",
+  "entrypoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {}
+  }
+}
