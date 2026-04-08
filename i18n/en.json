@@ -1,0 +1,8 @@
+{
+  "launcher": {
+    "title": "Godot",
+    "description": "Search Godot projects",
+    "notInstalled": "Godot not installed",
+    "notInstalledDesc": "Godot is not installed on this system."
+  }
+}
