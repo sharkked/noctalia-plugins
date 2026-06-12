@@ -1,4 +1,5 @@
 import QtQuick
+import QtCore
 import Quickshell
 import Quickshell.Io
 import qs.Commons
@@ -31,10 +32,9 @@ Item {
 
     Process {
         id: getProjectList
-        command: ["sh", "-c", "gawk 'match(\$0, /\[(.*)\]/, a) { print a[1] }' ~/.local/share/godot/projects.cfg"]
+        command: ["sh", "-c", "gawk 'match(\$0, /\\[(.*)\\]/, a) { print a[1] }' ~/.local/share/godot/projects.cfg"]
         stdout: SplitParser {
             onRead: data => {
-                console.log(data);
                 if (data.trim() !== "") {
                     root.projectPaths.push(data.trim());
                 }
@@ -47,6 +47,11 @@ Item {
 
     function init() {
         whichGodot.running = true;
+        getProjectList.running = true;
+    }
+
+    function onOpened() {
+        root.projectPaths = [];
         getProjectList.running = true;
     }
 
@@ -95,7 +100,7 @@ Item {
                 "icon": "star",
                 "isTablerIcon": true,
                 "onActivate": function () {
-                    Quickshell.execDetached(["sh", "-c", `${root.godotBin} -e '/home/wren/workspace/about-nothing/'`]);
+                    Quickshell.execDetached(["sh", "-c", `${root.godotBin} -e '${p}/project.godot'`]);
                     launcher.close();
                 }
             };
